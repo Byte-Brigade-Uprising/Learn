@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L.B.V. - Learn by Video</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+        }
+        header {
+            background: #003366;
+            color: white;
+            padding: 20px;
+        }
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        header a:hover {
+            text-decoration: underline;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #004488;
+            padding: 15px;
+        }
+        nav button {
+            background: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        nav button:hover {
+            background: #ddd;
+        }
+        main {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+        .topic {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .fact {
+            font-style: italic;
+            color: #0056b3;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #004488;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html">L.B.V. - Learn by Video</a>
+    <p>Your source for verified educational content and daily insights.</p>
+</header>
+
+<nav>
+    <button onclick="loadTopic('government')">U.S. Government</button>
+    <button onclick="loadTopic('math')">Math</button>
+    <button onclick="loadTopic('science')">Science</button>
+    <button onclick="loadTopic('history')">History</button>
+    <button onclick="loadTopic('technology')">Technology</button>
+    <button onclick="loadTopic('literature')">Literature</button>
+    <button onclick="loadTopic('random')">Random Topic of the Day</button>
+</nav>
+
+<main>
+    <div class="topic">
+        <h2 id="topic-title">Welcome to L.B.V.</h2>
+        <p id="topic-content">Click a topic to explore in-depth knowledge.</p>
+        <p id="daily-fact" class="fact"></p>
+    </div>
+</main>
+
+<footer>
+    <p>© 2025 L.B.V. - Learn by Video. All rights reserved.</p>
+</footer>
+
+<script>
+    async function loadTopic(topic) {
+        if (topic === "random") {
+            document.getElementById('topic-title').innerText = "Random Topic of the Day";
+            document.getElementById('topic-content').innerText = loadRandomTopic();
+            document.getElementById('daily-fact').innerText = "Discover something new today!";
+            return;
+        }
+        
+        const topicDetails = {
+            government: "The U.S. government consists of three branches: Legislative, Executive, and Judicial. Each plays a critical role in governance.",
+            math: "Math is the foundation of problem-solving. It includes arithmetic, algebra, geometry, calculus, and statistics.",
+            science: "Science is the systematic study of the natural world. It encompasses fields such as physics, chemistry, biology, and earth sciences.",
+            history: "History teaches us about past events that shaped civilizations, including wars, revolutions, and cultural movements.",
+            technology: "Technology drives modern innovation, from computing and robotics to AI and space exploration.",
+            literature: "Literature captures human experiences through storytelling, poetry, novels, and essays."
+        };
+
+        document.getElementById('topic-title').innerText = topic.charAt(0).toUpperCase() + topic.slice(1);
+        document.getElementById('topic-content').innerText = topicDetails[topic];
+
+        const today = new Date();
+        const day = today.getDate();  
+
+        try {
+            const response = await fetch('facts.json');
+            const facts = await response.json();
+            const factText = facts[day][topic];
+            document.getElementById('daily-fact').innerHTML = factText ? formatFact(factText) : "No fact available.";
+        } catch (error) {
+            document.getElementById('daily-fact').innerText = "Error loading daily fact.";
+        }
+    }
+
+    function formatFact(fact) {
+        return fact.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">Source</a>');
+    }
+
+    function loadRandomTopic() {
+        const topics = ["Physics", "Philosophy", "Engineering", "Art", "Astronomy", "Psychology"];
+        const randomIndex = Math.floor(Math.random() * topics.length);
+        return topics[randomIndex]; 
+    }
+</script>
+
+</body>
+</html>
